@@ -1,0 +1,62 @@
+class Solution {    
+    public String smallestEquivalentString(String s1, String s2, String baseStr) {
+       List<int []> edges = new ArrayList<>();
+       List<List<Integer>> graph= new ArrayList<>();
+
+       for(int i=0 ; i<s1.length() ; i++){         
+           edges.add(new int[]{s1.charAt(i)-'a' ,s2.charAt(i)-'a' });
+       }  
+
+       for(int i=0 ; i<26 ; i++)
+          graph.add(new ArrayList<>());
+
+       for(int []edge:edges){
+          graph.get(edge[0]).add(edge[1]);
+          graph.get(edge[1]).add(edge[0]);  
+       }
+
+       
+       boolean vis[] = new boolean[26];
+       Queue<Integer> que = new LinkedList<>();
+       
+       List<List<Integer>> newList = new ArrayList<>();
+       for(int i=0 ; i<26 ; i++){
+           if(graph.get(i).size()>0 && !vis[i]){
+                que.add(i);
+                List<Integer> temp = new ArrayList<>();
+                temp.add(i);  
+                while(!que.isEmpty()){
+                    int curr = que.poll();
+                    for(Integer neigh:graph.get(curr)){
+                        if(!vis[neigh]) {
+                            vis[neigh] = true;
+                            que.add(neigh);
+                            temp.add(neigh);
+                        }
+                    }
+                }
+                Collections.sort(temp);
+                newList.add(temp);
+           }
+       }
+
+       String ans = "";
+
+       for(int i=0 ; i<baseStr.length() ; i++){
+           int ch = baseStr.charAt(i)-'a';
+           boolean flag = true;
+           for(List<Integer> l:newList){
+               if(l.contains(ch)){
+                 ans += (char)(l.get(0)+'a');
+                 flag = false;
+                }
+           }
+          if(flag)
+            ans += baseStr.charAt(i);
+       }
+
+       
+
+       return ans;
+    }
+}
