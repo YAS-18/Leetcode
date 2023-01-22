@@ -1,0 +1,45 @@
+class Solution {
+    List<List<Integer>> adj = new ArrayList<>();
+
+    boolean check(int start,int n,int []color){
+        Queue<Integer> que = new LinkedList<>();
+        que.add(start);
+        color[start] = 0;
+        
+        while(!que.isEmpty()){
+            int curr = que.poll();
+            for(int neigh : adj.get(curr)){
+                    if(color[neigh] == color[curr])
+                        return false;
+                    if(color[neigh] == -1){
+                        color[neigh] = 1 - color[curr];
+                        que.add(neigh);    
+                    }                   
+            }
+        }
+       return true;  
+    }
+    
+    public boolean isBipartite(int[][] graph) {
+        
+        int n = graph.length;
+        for(int i=0; i<n ; i++){
+          adj.add(new ArrayList<>());
+          for(int x:graph[i]){
+              adj.get(i).add(x);
+          }
+          System.out.println(adj.get(i));
+        }
+        
+        int color[] = new int[n];
+        Arrays.fill(color,-1);
+
+        for(int i=0 ; i<n ; i++){
+            if(color[i] == -1)
+               if(!check(i,n,color))
+                     return false;
+        }
+       return true;
+   
+    }
+}
